@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkNet.Extensions.Polling.Build", "build\VkNet.Extensions.Polling.Build.csproj", "{69FC01F1-F895-45E1-961B-89DD25F14BA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkNet.Extensions.Polling", "src\VkNet.Extensions.Polling\VkNet.Extensions.Polling.csproj", "{530C60B9-73C7-4054-8721-54402055FFFC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{D7B7BC4F-4F5D-4C79-8054-1B8B237CF2DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{8C502120-3867-4F6C-8BB5-3140117A8972}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkNet.Extensions.Polling.Example", "examples\VkNet.Extensions.Polling.Example\VkNet.Extensions.Polling.Example.csproj", "{1D5C5CB9-BE68-4C40-A1F2-DADEB7444297}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{69FC01F1-F895-45E1-961B-89DD25F14BA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69FC01F1-F895-45E1-961B-89DD25F14BA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{530C60B9-73C7-4054-8721-54402055FFFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{530C60B9-73C7-4054-8721-54402055FFFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{530C60B9-73C7-4054-8721-54402055FFFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{530C60B9-73C7-4054-8721-54402055FFFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D5C5CB9-BE68-4C40-A1F2-DADEB7444297}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D5C5CB9-BE68-4C40-A1F2-DADEB7444297}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D5C5CB9-BE68-4C40-A1F2-DADEB7444297}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D5C5CB9-BE68-4C40-A1F2-DADEB7444297}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{530C60B9-73C7-4054-8721-54402055FFFC} = {D7B7BC4F-4F5D-4C79-8054-1B8B237CF2DC}
+		{1D5C5CB9-BE68-4C40-A1F2-DADEB7444297} = {8C502120-3867-4F6C-8BB5-3140117A8972}
+	EndGlobalSection
+EndGlobal
