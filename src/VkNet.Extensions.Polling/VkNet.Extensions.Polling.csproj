@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+
+        <VersionPrefix>0.1.2</VersionPrefix>
+        <VersionSuffix>prerelease</VersionSuffix>
+        
+        <Title>VkNet.Extensions.Polling</Title>
+        <Authors>Mikhail</Authors>
+        <Description>Пакет, отвечающий за работу с Vk Api Long Poll для Пользователей и Групп.</Description>
+        <PackageProjectUrl>https://www.nuget.org/packages/VkNet.Extensions.Polling/</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/vknet/VkNet.Extensions.Polling</RepositoryUrl>
+        <PackageTags>c# vk vkapi vknet long poll longpolling</PackageTags>
+
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="VkNet" Version="1.65.0"/>
+        
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)'=='netstandard2.0' ">
+        <PackageReference Include="System.Threading.Channels" Version="6.0.0-preview.6.21352.12" />
+    </ItemGroup>
+
+    
+    
+</Project>
