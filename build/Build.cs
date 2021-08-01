@@ -19,7 +19,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 [CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
-[GitHubActions("release", GitHubActionsImage.WindowsLatest, GitHubActionsImage.WindowsLatest,
+[GitHubActions("release", GitHubActionsImage.WindowsLatest,
     InvokedTargets = new[]
     {
         nameof(Publish)
