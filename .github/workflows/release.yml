@@ -38,19 +38,3 @@ jobs:
         run: ./build.cmd Publish
         env:
           NugetApiKey: ${{ secrets.NUGET_API_KEY }}
-  windows-latest:
-    name: windows-latest
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Cache .nuke/temp, ~/.nuget/packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            .nuke/temp
-            ~/.nuget/packages
-          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
-      - name: Run './build.cmd Publish'
-        run: ./build.cmd Publish
-        env:
-          NugetApiKey: ${{ secrets.NUGET_API_KEY }}
