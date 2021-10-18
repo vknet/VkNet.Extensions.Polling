@@ -89,7 +89,7 @@ namespace VkNet.Extensions.Polling
 
                     await Task.Delay(Configuration.RequestDelay);
                 }
-            });
+            }, linkedTokenSource.Token);
         }
 
         protected abstract Task<TLongPollServerState> GetServerInformationAsync(IVkApi vkApi,
