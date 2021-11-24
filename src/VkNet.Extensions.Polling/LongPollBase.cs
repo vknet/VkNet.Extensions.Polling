@@ -19,17 +19,18 @@ namespace VkNet.Extensions.Polling
 
         private readonly ChannelWriter<TLongPollUpdate> _updateChannelWriter;
         private readonly ChannelReader<TLongPollUpdate> _updateChannelReader;
-        
+
         protected LongPollBase(IVkApi vkApi)
         {
-            Channel<TLongPollUpdate> updateChannel = Channel.CreateUnbounded<TLongPollUpdate>(new UnboundedChannelOptions()
-            {
-                SingleWriter = true                 
-            });
+            Channel<TLongPollUpdate> updateChannel = Channel.CreateUnbounded<TLongPollUpdate>(
+                new UnboundedChannelOptions()
+                {
+                    SingleWriter = true
+                });
 
             _updateChannelReader = updateChannel;
             _updateChannelWriter = updateChannel;
-            
+
             _vkApi = vkApi;
             _longPollStopTokenSource = new CancellationTokenSource();
 
@@ -40,7 +41,7 @@ namespace VkNet.Extensions.Polling
         }
 
         protected abstract bool Validate(IVkApi vkApi);
-        
+
         public TLongPollConfiguration Configuration { get; private set; }
 
         public async Task Start(TLongPollConfiguration longPollConfiguration,
@@ -71,10 +72,17 @@ namespace VkNet.Extensions.Polling
 
                             needRepeat = false;
                         }
-                        catch (LongPollKeyExpiredException)
+                        catch
                         {
-                            longPollServerInformation =
-                                await GetServerInformationAsync(_vkApi, longPollConfiguration, linkedTokenSource.Token);
+                            try
+                            {
+                                longPollServerInformation =
+                                    await GetServerInformationAsync(_vkApi, longPollConfiguration,
+                                        linkedTokenSource.Token);
+                            }
+                            catch
+                            {
+                            }
 
                             needRepeat = true;
                         }
