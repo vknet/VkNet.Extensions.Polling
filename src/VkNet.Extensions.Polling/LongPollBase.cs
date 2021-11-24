@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using VkNet.Abstractions;
 using VkNet.Exception;
 using VkNet.Extensions.Polling.Models.Configuration;
@@ -72,16 +75,87 @@ namespace VkNet.Extensions.Polling
 
                             needRepeat = false;
                         }
-                        catch
+                        catch (LongPollException longPollException)
                         {
-                            try
+                            if (longPollException is LongPollOutdateException outdatedException)
                             {
-                                longPollServerInformation =
-                                    await GetServerInformationAsync(_vkApi, longPollConfiguration,
-                                        linkedTokenSource.Token);
+                                longPollServerInformation.Update(Convert.ToUInt64(outdatedException.Ts));
                             }
-                            catch
+                            else
                             {
+                                try
+                                {
+                                    longPollServerInformation =
+                                        await GetServerInformationAsync(_vkApi, longPollConfiguration,
+                                            linkedTokenSource.Token);
+                                }
+                                catch (HttpRequestException)
+                                {
+                                    // Console.WriteLine("Нет соединения с интернетом! " + DateTime.Now, ConsoleColor.Red);
+                                }
+                                catch (PublicServerErrorException ex)
+                                {
+                                    // Console.WriteLine($"{DateTime.Now} Вконтакте недоступен!\n{ex.Message}", ConsoleColor.Red);
+                                }
+                                catch (JsonSerializationException ex)
+                                {
+                                    // Console.WriteLine(ex.ToString(), "Ошибка в GetLongPollServer - JsonSerializationException!");
+                                }
+                                catch (System.Exception ex)
+                                {
+                                    if
+                                    (
+                                        ex is System.Net.Sockets.SocketException or TaskCanceledException or IOException
+                                            or
+                                            System.Net.WebException
+                                    )
+                                    {
+                                        // ошибка без явной проблемы, бывает выпадает просто так
+                                    }
+                                    else
+                                    {
+                                        // Console.WriteLine(ex.ToString(), "Ошибка в GetLongPollServer!");
+                                    }
+
+                                }
+                                
+                            }
+                            
+                            needRepeat = true;
+                        }
+                        catch (HttpRequestException)
+                        {
+                            // Console.WriteLine("Нет соединения с интернетом! " + DateTime.Now, ConsoleColor.Red);
+                            needRepeat = true;
+                        }
+                        catch (PublicServerErrorException ex)
+                        {
+                            // Console.WriteLine($"{DateTime.Now} Вконтакте недоступен!\n{ex.Message}", ConsoleColor.Red);
+                            needRepeat = true;
+                        }
+                        catch (JsonSerializationException ex)
+                        {
+                            // Console.WriteLine(ex.ToString(), "Ошибка в GetLongPollServer - JsonSerializationException!");
+                            needRepeat = true;
+                        }
+                        catch (ArgumentNullException ex)
+                        {
+                            // Console.WriteLine(ex.ToString(), "Ошибка в GetLongPollServer - ArgumentNullException!");
+                            needRepeat = true;
+                        }
+                        catch (System.Exception ex)
+                        {
+                            if
+                            (
+                                ex is System.Net.Sockets.SocketException or TaskCanceledException or IOException or
+                                    System.Net.WebException
+                            )
+                            {
+                                // ошибка без явной проблемы, бывает выпадает просто так
+                            }
+                            else
+                            {
+                                // Console.WriteLine(ex.ToString(), "Ошибка в GetLongPoolHistory!");
                             }
 
                             needRepeat = true;
