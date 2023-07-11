@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using VkNet.Enums.SafetyEnums;
+using VkNet.Enums.StringEnums;
 
 namespace VkNet.Extensions.Polling.Models.Configuration
 {

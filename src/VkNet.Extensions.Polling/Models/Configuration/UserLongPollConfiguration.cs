@@ -1,6 +1,5 @@
 ﻿using System;
 using VkNet.Enums.Filters;
-using VkNet.Enums.SafetyEnums;
 
 namespace VkNet.Extensions.Polling.Models.Configuration
 {

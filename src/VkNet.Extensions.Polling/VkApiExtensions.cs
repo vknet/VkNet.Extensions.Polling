@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using VkNet.Extensions.Polling.Models.Configuration;
 
 namespace VkNet.Extensions.Polling
@@ -12,10 +11,11 @@ namespace VkNet.Extensions.Polling
         /// </summary>
         /// <param name="vkApi">Экземпляр VkApi.</param>
         /// <param name="userLongPollConfiguration">Конфигурация Лонг Пулла.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public static UserLongPoll StartUserLongPollAsync(this VkApi vkApi, UserLongPollConfiguration userLongPollConfiguration, CancellationToken cancellationToken = default)
         {
-            UserLongPoll userLongPoll = new UserLongPoll(vkApi);
+            var userLongPoll = new UserLongPoll(vkApi);
             
             userLongPoll.Start(userLongPollConfiguration, cancellationToken).ConfigureAwait(false);
 
@@ -27,10 +27,11 @@ namespace VkNet.Extensions.Polling
         /// </summary>
         /// <param name="vkApi">Экземпляр VkApi.</param>
         /// <param name="groupLongPollConfiguration">Конфигурация Лонг Пулла.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public static GroupLongPoll StartGroupLongPollAsync(this VkApi vkApi, GroupLongPollConfiguration groupLongPollConfiguration, CancellationToken cancellationToken = default)
         {
-            GroupLongPoll groupLongPoll = new GroupLongPoll(vkApi);
+            var groupLongPoll = new GroupLongPoll(vkApi);
             
             groupLongPoll.Start(groupLongPollConfiguration, cancellationToken).ConfigureAwait(false);
 
@@ -41,7 +42,7 @@ namespace VkNet.Extensions.Polling
         {
             try
             {
-                UserLongPoll userLongPoll = new UserLongPoll(api);
+                var userLongPoll = new UserLongPoll(api);
 
                 return true;
             }
@@ -55,7 +56,7 @@ namespace VkNet.Extensions.Polling
         {
             try
             {
-                GroupLongPoll userLongPoll = new GroupLongPoll(api);
+                var userLongPoll = new GroupLongPoll(api);
 
                 return true;
             }
