@@ -7,8 +7,6 @@ using VkNet.Abstractions;
 using VkNet.Extensions.Polling.Models.Configuration;
 using VkNet.Extensions.Polling.Models.State;
 using VkNet.Model;
-using VkNet.Model.GroupUpdate;
-using VkNet.Model.RequestParams;
 
 namespace VkNet.Extensions.Polling
 {
@@ -27,29 +25,23 @@ namespace VkNet.Extensions.Polling
             var groups = vkApi.Groups.GetById(null, null, null);
 
             var groupOwner = groups.FirstOrDefault();
-            
-            if (groupOwner != null)
-            {
-                _groupId = groupOwner.Id;
-                
-                return true;
-            }
 
-            return false;
+            if (groupOwner == null) return false;
+            _groupId = groupOwner.Id;
+                
+            return true;
+
         }
 
         protected override async Task<GroupLongPollServerState> GetServerInformationAsync(IVkApi vkApi,
             GroupLongPollConfiguration longPollConfiguration, CancellationToken cancellationToken = default)
         {
-            return await vkApi.Groups.GetLongPollServerAsync(Convert.ToUInt64(_groupId))
-                .ContinueWith(_ =>
-                {
-                    return new GroupLongPollServerState(
-                        Convert.ToUInt64(_.Result.Ts),
-                        _.Result.Key,
-                        _.Result.Server
-                    );
-                }, cancellationToken);
+            return await vkApi.Groups.GetLongPollServerAsync(Convert.ToUInt64(_groupId), cancellationToken)
+                .ContinueWith(_ => new GroupLongPollServerState(
+                    Convert.ToUInt64(_.Result.Ts),
+                    _.Result.Key,
+                    _.Result.Server
+                ), cancellationToken);
         }
 
         protected override Task<BotsLongPollHistoryResponse> GetUpdatesAsync(IVkApi vkApi,
@@ -62,7 +54,7 @@ namespace VkNet.Extensions.Polling
                 Key = longPollServerInformation.Key,
                 Server = longPollServerInformation.Server,
                 Ts = longPollServerInformation.Ts.ToString()
-            }).ContinueWith(_ =>
+            }, cancellationToken).ContinueWith(_ =>
             {
                 longPollServerInformation.Update(Convert.ToUInt64(_.Result.Ts));
 
@@ -73,14 +65,8 @@ namespace VkNet.Extensions.Polling
         protected override IEnumerable<GroupUpdate> ConvertLongPollResponse(
             BotsLongPollHistoryResponse longPollResponse)
         {
-            foreach (GroupUpdate groupUpdate in longPollResponse.Updates)
-            {
-                if (Configuration.AllowedUpdateTypes != null &&
-                    Array.IndexOf(Configuration.AllowedUpdateTypes, groupUpdate.Type) == -1)
-                    continue;
-
-                yield return groupUpdate;
-            }
+            return longPollResponse.Updates.Where(groupUpdate => Configuration.AllowedUpdateTypes == null ||
+                                                                 Array.IndexOf(Configuration.AllowedUpdateTypes, groupUpdate.Type) != -1);
         }
     }
 }

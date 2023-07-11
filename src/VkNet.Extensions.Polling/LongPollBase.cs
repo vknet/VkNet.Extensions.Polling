@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using VkNet.Abstractions;
-using VkNet.Exception;
 using VkNet.Extensions.Polling.Models.Configuration;
 using VkNet.Extensions.Polling.Models.State;
 
@@ -22,7 +21,7 @@ namespace VkNet.Extensions.Polling
 
         protected LongPollBase(IVkApi vkApi)
         {
-            Channel<TLongPollUpdate> updateChannel = Channel.CreateUnbounded<TLongPollUpdate>(
+            var updateChannel = Channel.CreateUnbounded<TLongPollUpdate>(
                 new UnboundedChannelOptions()
                 {
                     SingleWriter = true
@@ -36,7 +35,7 @@ namespace VkNet.Extensions.Polling
 
             if (!Validate(vkApi))
             {
-                throw new NotSupportedException("Выбранный тип лонг пулла недоступен для данного аккаунта.");
+                throw new NotSupportedException("Selected type of long poll is not available for this account");
             }
         }
 
@@ -95,7 +94,7 @@ namespace VkNet.Extensions.Polling
                         await _updateChannelWriter.WriteAsync(update, cancellationToken: cancellationToken);
                     }
 
-                    await Task.Delay(Configuration.RequestDelay);
+                    await Task.Delay(Configuration.RequestDelay, linkedTokenSource.Token);
                 }
             }, linkedTokenSource.Token);
         }
