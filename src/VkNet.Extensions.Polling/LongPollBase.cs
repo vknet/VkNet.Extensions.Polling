@@ -35,7 +35,7 @@ namespace VkNet.Extensions.Polling
 
             if (!Validate(vkApi))
             {
-                throw new NotSupportedException("Selected type of long poll is not available for this account");
+                throw new NotSupportedException("Выбранный тип лонг пулла недоступен для данного аккаунта.");
             }
         }
 
