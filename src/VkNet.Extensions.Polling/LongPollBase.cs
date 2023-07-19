@@ -7,7 +7,6 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VkNet.Abstractions;
-using VkNet.Exception;
 using VkNet.Extensions.Polling.Models.Configuration;
 using VkNet.Extensions.Polling.Models.State;
 
@@ -25,7 +24,7 @@ namespace VkNet.Extensions.Polling
 
         protected LongPollBase(IVkApi vkApi)
         {
-            Channel<TLongPollUpdate> updateChannel = Channel.CreateUnbounded<TLongPollUpdate>(
+            var updateChannel = Channel.CreateUnbounded<TLongPollUpdate>(
                 new UnboundedChannelOptions()
                 {
                     SingleWriter = true
@@ -169,7 +168,7 @@ namespace VkNet.Extensions.Polling
                         await _updateChannelWriter.WriteAsync(update, cancellationToken: cancellationToken);
                     }
 
-                    await Task.Delay(Configuration.RequestDelay);
+                    await Task.Delay(Configuration.RequestDelay, linkedTokenSource.Token);
                 }
             }, linkedTokenSource.Token);
         }
