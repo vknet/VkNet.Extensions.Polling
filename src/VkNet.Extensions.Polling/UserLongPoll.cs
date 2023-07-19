@@ -31,7 +31,7 @@ namespace VkNet.Extensions.Polling
                     _ => new UserLongPollServerState(Convert.ToUInt64(_.Result.Ts),
                         _.Result?.Pts ??
                         throw new InvalidOperationException(
-                            "Failed to get Pts. Problem getting server information")),
+                            "Не удалось получить Pts. Проблема при получении информации о сервере.")),
                     cancellationToken);
         }
 
