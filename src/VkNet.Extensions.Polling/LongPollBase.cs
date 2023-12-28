@@ -91,7 +91,7 @@ namespace VkNet.Extensions.Polling
 
                     foreach (var update in updates)
                     {
-                        await _updateChannelWriter.WriteAsync(update, cancellationToken: cancellationToken);
+                        await _updateChannelWriter.WriteAsync(update, cancellationToken: linkedTokenSource.Token);
                     }
 
                     await Task.Delay(Configuration.RequestDelay, linkedTokenSource.Token);
