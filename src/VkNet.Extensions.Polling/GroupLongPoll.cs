@@ -38,7 +38,7 @@ namespace VkNet.Extensions.Polling
         {
             return await vkApi.Groups.GetLongPollServerAsync(Convert.ToUInt64(_groupId), cancellationToken)
                 .ContinueWith(_ => new GroupLongPollServerState(
-                    Convert.ToUInt64(_.Result.Ts),
+                    _.Result.Ts,
                     _.Result.Key,
                     _.Result.Server
                 ), cancellationToken);
@@ -53,10 +53,11 @@ namespace VkNet.Extensions.Polling
             {
                 Key = longPollServerInformation.Key,
                 Server = longPollServerInformation.Server,
-                Ts = longPollServerInformation.Ts.ToString()
+                Ts = longPollServerInformation.Ts,
+                Wait = longPollConfiguration.WaitMs
             }, cancellationToken).ContinueWith(_ =>
             {
-                longPollServerInformation.Update(Convert.ToUInt64(_.Result.Ts));
+                longPollServerInformation.Update(_.Result.Ts);
 
                 return _.Result;
             }, cancellationToken);
