@@ -8,7 +8,6 @@ using VkNet.Extensions.Polling.Models.Configuration;
 using VkNet.Extensions.Polling.Models.State;
 using VkNet.Extensions.Polling.Models.Update;
 using VkNet.Model;
-using VkNet.Model.RequestParams;
 
 namespace VkNet.Extensions.Polling
 {
@@ -27,8 +26,12 @@ namespace VkNet.Extensions.Polling
         protected override async Task<UserLongPollServerState> GetServerInformationAsync(IVkApi vkApi,
             UserLongPollConfiguration longPollConfiguration, CancellationToken cancellationToken = default)
         {
-            return await vkApi.Messages.GetLongPollServerAsync(true)
-                .ContinueWith(_ => new UserLongPollServerState(Convert.ToUInt64(_.Result.Ts), _.Result?.Pts ?? throw new InvalidOperationException("Не удалось получить Pts. Проблема при получении информации о сервере.")),
+            return await vkApi.Messages.GetLongPollServerAsync(true, token: cancellationToken)
+                .ContinueWith(
+                    _ => new UserLongPollServerState(Convert.ToUInt64(_.Result.Ts),
+                        _.Result?.Pts ??
+                        throw new InvalidOperationException(
+                            "Не удалось получить Pts. Проблема при получении информации о сервере.")),
                     cancellationToken);
         }
 
@@ -42,7 +45,7 @@ namespace VkNet.Extensions.Polling
                 Pts = longPollServerInformation.Pts,
                 Ts = longPollServerInformation.Ts,
                 Fields = userLongPollConfiguration.Fields
-            }).ContinueWith(_ =>
+            }, cancellationToken).ContinueWith(_ =>
             {
                 longPollServerInformation.Update(_.Result.NewPts);
 
@@ -53,19 +56,12 @@ namespace VkNet.Extensions.Polling
         protected override IEnumerable<UserUpdate> ConvertLongPollResponse(
             LongPollHistoryResponse longPollResponse)
         {
-            foreach (var message in longPollResponse.Messages)
-            {
-                UserUpdateSender updateSender;
-
-                if (message.FromId < 0)
-                    updateSender = new UserUpdateSender(longPollResponse.Groups.First(_ => _.Id == message.FromId));
-                else
-                    updateSender = new UserUpdateSender(longPollResponse.Profiles.First(_ => _.Id == message.FromId));
-
-                var userUpdate = new UserUpdate(message, updateSender);
-
-                yield return userUpdate;
-            }
+            return from message in longPollResponse.Messages
+                let updateSender =
+                    message.FromId < 0
+                        ? new UserUpdateSender(longPollResponse.Groups.First(_ => _.Id == message.FromId))
+                        : new UserUpdateSender(longPollResponse.Profiles.First(_ => _.Id == message.FromId))
+                select new UserUpdate(message, updateSender);
         }
     }
 }

@@ -10,7 +10,6 @@ using Serilog.Events;
 using VkNet.Extensions.Polling.Models.Configuration;
 using VkNet.Extensions.Polling.Models.Update;
 using VkNet.Model;
-using VkNet.Model.GroupUpdate;
 
 namespace VkNet.Extensions.Polling.Example
 {
